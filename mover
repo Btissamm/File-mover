@@ -1,0 +1,61 @@
+import os
+import tkinter as tk
+from tkinter import filedialog, messagebox
+
+class FileMoverGUI:
+    def __init__(self, master):
+        self.master = master
+        master.title("File Mover")
+
+        self.source_path = ""
+        self.destination_path = ""
+
+        self.source_label = tk.Label(master, text="Source File:")
+        self.source_label.grid(row=0, column=0)
+
+        self.source_path_label = tk.Label(master, text="No file selected.")
+        self.source_path_label.grid(row=0, column=1)
+
+        self.source_button = tk.Button(master, text="Select File", command=self.select_source)
+        self.source_button.grid(row=0, column=2)
+
+        self.destination_label = tk.Label(master, text="Destination Folder:")
+        self.destination_label.grid(row=1, column=0)
+
+        self.destination_path_label = tk.Label(master, text="No folder selected.")
+        self.destination_path_label.grid(row=1, column=1)
+
+        self.destination_button = tk.Button(master, text="Select Folder", command=self.select_destination)
+        self.destination_button.grid(row=1, column=2)
+
+        self.move_button = tk.Button(master, text="Move File", command=self.move_file)
+        self.move_button.grid(row=2, column=1)
+
+    def select_source(self):
+        self.source_path = filedialog.askopenfilename()
+        self.source_path_label.config(text=self.source_path)
+
+    def select_destination(self):
+        self.destination_path = filedialog.askdirectory()
+        self.destination_path_label.config(text=self.destination_path)
+
+    def move_file(self):
+        if self.source_path == "":
+            messagebox.showerror("Error", "Please select a source file.")
+            return
+        elif self.destination_path == "":
+            messagebox.showerror("Error", "Please select a destination folder.")
+            return
+        elif not os.path.isfile(self.source_path):
+            messagebox.showerror("Error", "The selected source file does not exist.")
+            return
+        elif not os.path.isdir(self.destination_path):
+            messagebox.showerror("Error", "The selected destination folder does not exist.")
+            return
+
+        os.system(f'move "{self.source_path}" "{self.destination_path}"')
+        messagebox.showinfo("Success", "File moved successfully.")
+
+root = tk.Tk()
+app = FileMoverGUI(root)
+root.mainloop()
